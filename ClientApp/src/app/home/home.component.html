@@ -1,1 +1,29 @@
-<h1>Hello, world!</h1>
+<h1>GG Casual Note</h1>
+
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Select Character</mat-label>
+    <mat-select (selectionChange)="onSelectCharacter($event)">
+      <mat-option *ngFor="let character of characterDropdownList" [value]="character">
+        {{character}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div>
+  <button style="margin-right: 2px" mat-raised-button *ngFor="let move of moveList">{{move.input}}</button>
+</div>
+
+
+<!--<form class="example-form">-->
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <mat-label>Context</mat-label>-->
+<!--    <input matInput placeholder="bnb" value="bnb">-->
+<!--  </mat-form-field>-->
+
+<!--  <mat-form-field class="example-full-width">-->
+<!--    <mat-label>Enter combo string</mat-label>-->
+<!--    <textarea matInput (focus)="onFocus($event)" placeholder="2K > 2D"></textarea>-->
+<!--  </mat-form-field>-->
+<!--</form>-->

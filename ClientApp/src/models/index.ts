@@ -1,2 +1,3 @@
-export * from './Character';
-export * from './MatchupNote';
+export * from './character';
+export * from './matchupNote';
+export * from './move'
