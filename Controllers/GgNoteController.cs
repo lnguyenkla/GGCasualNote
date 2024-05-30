@@ -17,9 +17,9 @@ public class GgNoteController : ControllerBase
     }
     
     [HttpGet("get-combo-notes")]
-    public async Task<ActionResult<IEnumerable<ComboNote>>> Get(string charId)
+    public async Task<ActionResult<IEnumerable<ComboNote>>> GetComboNotes(string characterId)
     {
-        return await _context.ComboNotes.Where(cn => cn.CharacterId.Equals(charId)).ToListAsync();
+        return await _context.ComboNotes.Where(cn => cn.CharacterId.Equals(characterId)).ToListAsync();
     }
 
     [HttpPost("create-combo-note")]
@@ -39,11 +39,11 @@ public class GgNoteController : ControllerBase
 
         return new ActionResult<string>("Note updated");
     }
-
+    
     [HttpDelete("delete-combo-note")]
     public ActionResult<string> DeleteComboNote(int comboNoteId)
     {
-        var deletingNote = _context.ComboNotes.Where(n => n.ComboNoteId == comboNoteId).FirstOrDefault();
+        var deletingNote = _context.ComboNotes.FirstOrDefault(n => n.ComboNoteId == comboNoteId);
 
         _context.ComboNotes.Remove(deletingNote);
         _context.SaveChanges();
@@ -51,6 +51,41 @@ public class GgNoteController : ControllerBase
         return new ActionResult<string>($"Deleted note {comboNoteId} of {deletingNote.CharacterId}");
     }
     
+    [HttpGet("get-matchup-note")]
+    public async Task<ActionResult<IEnumerable<MatchupNote>>> GetMatchupNote(string characterId)
+    {
+        return await _context.MatchupNotes.Where(cn => cn.CharacterId.Equals(characterId)).ToListAsync();
+    }
+    
+    [HttpPost("create-matchup-note")]
+    public async Task<ActionResult<string>> CreateMatchupNote(MatchupNote comboNote)
+    {
+        await _context.MatchupNotes.AddAsync(comboNote);
+        await _context.SaveChangesAsync();
+
+        return new ActionResult<string>("Note created");
+    }
+    
+    [HttpPut("update-matchup-note")]
+    public ActionResult<string> UpdateMatchupNote(MatchupNote comboNote)
+    {
+        _context.MatchupNotes.Update(comboNote);
+        _context.SaveChanges();
+
+        return new ActionResult<string>("Note updated");
+    }
+    
+    [HttpDelete("delete-matchup-note")]
+    public ActionResult<string> DeleteMatchupNote(int matchupNoteId)
+    {
+        var deletingNote = _context.MatchupNotes.FirstOrDefault(n => n.MatchupNoteId == matchupNoteId);
+
+        _context.MatchupNotes.Remove(deletingNote);
+        _context.SaveChanges();
+
+        return new ActionResult<string>($"Deleted note {matchupNoteId} of {deletingNote.CharacterId} vs {deletingNote.VsCharacterId}");
+    }
+
     
     [HttpGet("get-all-characters")]
     public async Task<ActionResult<IEnumerable<Character>>> GetCharacters()
