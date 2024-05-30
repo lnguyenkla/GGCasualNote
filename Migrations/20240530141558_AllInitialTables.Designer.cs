@@ -3,6 +3,7 @@ using System;
 using GGCasualNote.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GGCasualNote.Migrations
 {
     [DbContext(typeof(GgNoteContext))]
-    partial class GGNoteContextModelSnapshot : ModelSnapshot
+    [Migration("20240530141558_AllInitialTables")]
+    partial class AllInitialTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.27");

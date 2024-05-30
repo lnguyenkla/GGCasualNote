@@ -16,19 +16,49 @@ public class GgNoteController : ControllerBase
         _context = context;
     }
     
-    [HttpGet("id")]
-    public async Task<ActionResult<IEnumerable<ComboNote>>> Get(int charId)
+    [HttpGet("get-combo-notes")]
+    public async Task<ActionResult<IEnumerable<ComboNote>>> Get(string charId)
     {
-        return await _context.ComboNotes.Where(cn => cn.CharacterId == charId).ToListAsync();
+        return await _context.ComboNotes.Where(cn => cn.CharacterId.Equals(charId)).ToListAsync();
+    }
+
+    [HttpPost("create-combo-note")]
+    public async Task<ActionResult<string>> CreateComboNote(ComboNote comboNote)
+    {
+        await _context.ComboNotes.AddAsync(comboNote);
+        await _context.SaveChangesAsync();
+
+        return new ActionResult<string>("Note created");
     }
     
-    [HttpGet]
+    [HttpPut("update-combo-note")]
+    public ActionResult<string> UpdateComboNote(ComboNote comboNote)
+    {
+        _context.ComboNotes.Update(comboNote);
+        _context.SaveChanges();
+
+        return new ActionResult<string>("Note updated");
+    }
+
+    [HttpDelete("delete-combo-note")]
+    public ActionResult<string> DeleteComboNote(int comboNoteId)
+    {
+        var deletingNote = _context.ComboNotes.Where(n => n.ComboNoteId == comboNoteId).FirstOrDefault();
+
+        _context.ComboNotes.Remove(deletingNote);
+        _context.SaveChanges();
+
+        return new ActionResult<string>($"Deleted note {comboNoteId} of {deletingNote.CharacterId}");
+    }
+    
+    
+    [HttpGet("get-all-characters")]
     public async Task<ActionResult<IEnumerable<Character>>> GetCharacters()
     {
         return await _context.Characters.ToListAsync();
     }
     
-    [HttpPost]
+    [HttpPost("create-characters")]
     public ActionResult<string> Post(Character character)
     {
         _context.Characters.Add(character);
@@ -36,15 +66,28 @@ public class GgNoteController : ControllerBase
     
         return new ActionResult<string>("OK");
     }
-    
-    [HttpPut("create-move-list")]
-    public ActionResult<IEnumerable<string>> UpdateMoveList(string character)
+
+    [HttpGet("get-move-list")]
+    public ActionResult<IEnumerable<Move>> GetMoveList(string characterId)
     {
-        var html = $@"https://www.dustloop.com/w/GGST/{character}";
+        return _context.Moves.Where(m => m.CharacterId.Equals(characterId)).ToList();
+    }
+
+    [HttpGet("move-list-last-updated")]
+    public ActionResult<DateTime> GetLastUpdatedTime(string characterId)
+    {
+        return _context.MoveListTimestamps.Where(t => t.CharacterId.Equals(characterId)).OrderByDescending(t => t)
+            .FirstOrDefault().LastUpdated;
+    }
+    
+    [HttpPut("update-move-list")]
+    public ActionResult<IEnumerable<string>> UpdateMoveList(string characterId)
+    {
+        var html = $@"https://www.dustloop.com/w/GGST/{characterId}";
         HtmlWeb web = new HtmlWeb();
         var htmlDoc = web.Load(html);
 
-        var normalMoveSection = htmlDoc.DocumentNode.SelectNodes("//section[@id='citizen-section-2']").First();
+        var normalMoveSection = htmlDoc.DocumentNode.SelectNodes("//section[@id='citizen-section-2']").FirstOrDefault();
 
         var excludedMoves = new List<string>() { 
             "Wild Assault", "Orange", "j.4D", "j.6D", "236D", "6D", "4D",
@@ -76,7 +119,27 @@ public class GgNoteController : ControllerBase
         moveList = moveList.Union(htmlDoc.DocumentNode.SelectNodes("//span[@class='input-badge']").Select(e => e.InnerText.Trim()).ToHashSet()).ToHashSet();
         // Exclude universal moves
         moveList = moveList.Except(excludedMoves).ToHashSet();
+
+        if (moveList.Count == 0)
+        {
+            return new ActionResult<IEnumerable<string>>(moveList);
+        }
+
+        var deletingMoves = _context.Moves.Where(m => m.CharacterId.Equals(characterId)).ToList();
+        _context.Moves.RemoveRange(deletingMoves);
+        _context.SaveChanges();
         
+        var addingMoves = moveList.Select(moveInput => new Move() { CharacterId = characterId, Input = moveInput }).ToList();
+        _context.AddRange(addingMoves);
+
+        _context.MoveListTimestamps.Add(new MoveListTimestamp()
+        {
+            CharacterId = characterId,
+            LastUpdated = DateTime.Now.ToLocalTime()
+        });
+        
+        _context.SaveChanges();
+
         return new ActionResult<IEnumerable<string>>(moveList);
     }
 }

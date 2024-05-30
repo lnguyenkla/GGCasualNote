@@ -8,6 +8,9 @@ public class GgNoteContext : DbContext
 {
     public DbSet<Character> Characters { get; set; }
     public DbSet<ComboNote> ComboNotes { get; set; }
+    public DbSet<MatchupNote> MatchupNotes { get; set; }
+    public DbSet<Move> Moves { get; set; }
+    public DbSet<MoveListTimestamp> MoveListTimestamps { get; set; }
     
     public string DbPath { get; }
 
