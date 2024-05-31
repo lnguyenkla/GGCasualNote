@@ -1,29 +1,70 @@
-<h1>GG Casual Note</h1>
-
-<div>
-  <mat-form-field appearance="fill">
-    <mat-label>Select Character</mat-label>
-    <mat-select (selectionChange)="onSelectCharacter($event)">
-      <mat-option *ngFor="let character of characterDropdownList" [value]="character">
-        {{character}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+<div class="navbar-header">
+  <div>
+    <h1 style="margin-bottom: 3px;">GGST Casual Note</h1>
+  </div>
+  <mat-spinner class="load-spinner"
+               mode="indeterminate"
+                *ngIf="isLoading"
+                color="accent">
+  </mat-spinner>
+  <div class="flex-spacer"></div>
+  <div>
+    <span>Last updated: {{lastUpdated || "N/A"}}</span>
+  </div>
+  <div>
+    <button mat-icon-button color="accent" [disabled]="!selectedCharacter" (click)="scrapMoveList()">
+      <mat-icon>sync_alt</mat-icon>
+    </button>
+  </div>
 </div>
+<div class="main-container">
+  <div style="margin-bottom: 20px">
+    <div style="display: flex">
+      <mat-form-field appearance="fill">
+        <mat-label>Select Character</mat-label>
+        <mat-select (selectionChange)="onSelectCharacter($event)">
+          <mat-option *ngFor="let character of characterDropdownList" [value]="character.characterId">
+            {{character.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div style="margin-left: 20px;">
 
-<div>
-  <button style="margin-right: 2px" mat-raised-button *ngFor="let move of moveList">{{move.input}}</button>
+      </div>
+      <div style="margin-left: 20px;">
+        <button mat-icon-button style="margin-top: 5px;" (click)="addComboNote()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div>
+      <div *ngIf="!moveList || moveList.length === 0">
+        <span>Nothing to show here. Try selecting a character or scrapping the move list first.</span>
+      </div>
+      <button style="margin-right: 2px" mat-raised-button *ngFor="let move of moveList">{{move.input}}</button>
+    </div>
+  </div>
+  <div class="note-container">
+    <mat-card class="combo-note-card"
+              *ngFor="let note of comboNotes; let i = index">
+      <div class="combo-input-container">
+        <input placeholder="Context" matInput [(ngModel)]="comboNotes[i].noteContext">
+        <input placeholder="Combo string" matInput [(ngModel)]="comboNotes[i].comboString">
+      </div>
+      <div style="margin-left: 30px; display: flex">
+        <button mat-icon-button (click)="saveComboNote(i)" >
+          <mat-icon>save</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deleteComboNote(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-button style="margin-top: 5px"
+                (click)="toggleShowVideo(i)">Show video</button>
+        <iframe *ngIf="displayVideoFlags[i]" width="560" height="315" [src]="videoSafeUrls[i]" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <div style="margin-top: 5px; margin-left: 20px">
+          <input matInput placeholder="Video link" [(ngModel)]="comboNotes[i].footageUrl">
+        </div>
+      </div>
+    </mat-card>
+  </div>
 </div>
-
-
-<!--<form class="example-form">-->
-<!--  <mat-form-field class="example-full-width">-->
-<!--    <mat-label>Context</mat-label>-->
-<!--    <input matInput placeholder="bnb" value="bnb">-->
-<!--  </mat-form-field>-->
-
-<!--  <mat-form-field class="example-full-width">-->
-<!--    <mat-label>Enter combo string</mat-label>-->
-<!--    <textarea matInput (focus)="onFocus($event)" placeholder="2K > 2D"></textarea>-->
-<!--  </mat-form-field>-->
-<!--</form>-->

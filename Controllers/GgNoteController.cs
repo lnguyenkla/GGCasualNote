@@ -45,6 +45,11 @@ public class GgNoteController : ControllerBase
     {
         var deletingNote = _context.ComboNotes.FirstOrDefault(n => n.ComboNoteId == comboNoteId);
 
+        if (deletingNote == null)
+        {
+            return new ActionResult<string>($"Cannot find note ID {comboNoteId}");    
+        }
+        
         _context.ComboNotes.Remove(deletingNote);
         _context.SaveChanges();
 
@@ -111,8 +116,15 @@ public class GgNoteController : ControllerBase
     [HttpGet("move-list-last-updated")]
     public ActionResult<DateTime> GetLastUpdatedTime(string characterId)
     {
-        return _context.MoveListTimestamps.Where(t => t.CharacterId.Equals(characterId)).OrderByDescending(t => t)
-            .FirstOrDefault().LastUpdated;
+        var queryResult = _context.MoveListTimestamps.Where(t => t.CharacterId.Equals(characterId)).OrderByDescending(t => t)
+            .FirstOrDefault();
+
+        if (queryResult == null)
+        {
+            return null;
+        }
+
+        return queryResult.LastUpdated;
     }
     
     [HttpPut("update-move-list")]
@@ -131,7 +143,7 @@ public class GgNoteController : ControllerBase
             "5S", "2S", "j.S",
             "5H", "2H", "j.H",
             "5D", "2D", "j.D",
-            "f.S", "c.S", "P", "S", "K", "H", "6P"
+            "f.S", "c.S", "P", "S", "K", "H", "6P", "6H"
         };
         var moveList = new HashSet<string>();
         
