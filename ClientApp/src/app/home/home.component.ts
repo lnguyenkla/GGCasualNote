@@ -106,7 +106,8 @@ export class HomeComponent implements OnInit {
       characterId: this.selectedCharacter,
       comboString: "",
       noteContext: "",
-      footageUrl: ""
+      footageUrl: "",
+      longestStreak: 0
     });
   }
 

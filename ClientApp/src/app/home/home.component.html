@@ -18,7 +18,7 @@
   </div>
 </div>
 <div class="main-container">
-  <div style="margin-bottom: 20px">
+  <div class="pinned-info-container">
     <div style="display: flex">
       <mat-form-field appearance="fill">
         <mat-label>Select Character</mat-label>
@@ -63,6 +63,8 @@
         <iframe *ngIf="displayVideoFlags[i]" width="560" height="315" [src]="videoSafeUrls[i]" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         <div style="margin-top: 5px; margin-left: 20px">
           <input matInput placeholder="Video link" [(ngModel)]="comboNotes[i].footageUrl">
+          <span class="longest-streak-label">Longest streak</span>
+          <input class="longest-streak-input" matInput type="number" min="0" [(ngModel)]="comboNotes[i].longestStreak">
         </div>
       </div>
     </mat-card>

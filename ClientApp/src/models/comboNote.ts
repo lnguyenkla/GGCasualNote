@@ -4,4 +4,5 @@ export interface ComboNote {
   comboString: string;
   footageUrl: string;
   characterId: string;
+  longestStreak: number;
 }

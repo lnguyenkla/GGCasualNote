@@ -10,6 +10,7 @@ public class ComboNote
     public string NoteContext { get; set; }
     public string ComboString { get; set; }
     public string FootageUrl { get; set; }
+    public int LongestStreak { get; set; }
     
     public string CharacterId { get; set; }
 
