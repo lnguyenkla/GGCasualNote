@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter} from '@angular/core';
 import {MoveListService} from "../../services/move-list.service";
+
+export const TIMESTAMP_UPDATE: EventEmitter<string> = new EventEmitter<string>();
 
 @Component({
   selector: 'app-header',
@@ -11,5 +13,8 @@ export class HeaderComponent {
   public lastUpdated: string = "";
 
   constructor(private moveListService: MoveListService) {
+    TIMESTAMP_UPDATE.subscribe((timestamp: string) => {
+      this.lastUpdated = timestamp;
+    });
   }
 }

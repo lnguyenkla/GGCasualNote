@@ -6,6 +6,8 @@ import {ComboNoteService} from "../../services/combo-note.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {MatSelectChange} from "@angular/material/select";
 import {ActivatedRoute} from "@angular/router";
+import {firstValueFrom, Observable} from "rxjs";
+import {TIMESTAMP_UPDATE} from "../header/header.component";
 
 @Component({
   selector: 'app-character-select',
@@ -36,22 +38,25 @@ export class CharacterSelectComponent implements OnInit {
     );
   }
 
-  public scrapMoveList() {
+  public async scrapMoveList() {
     this.isLoading = true;
+
+    let request: Observable<any> = this.moveListService.putScrapMoveList(this.selectedCharacter);
+    let result: string[] = await firstValueFrom(request);
+
+    console.log(result);
 
     this.moveListService.putScrapMoveList(this.selectedCharacter).subscribe((inputList: string[]) => {
       console.log(inputList);
 
       this.isLoading = false;
-
-      this.pullMoveData();
     });
   }
 
   public onSelectCharacter($event: MatSelectChange) {
     this.selectedCharacter = $event.value;
 
-    this.pullMoveData();
+    this.pullMoveData().then();
 
     this.pullComboNoteData();
   }
@@ -66,12 +71,35 @@ export class CharacterSelectComponent implements OnInit {
     });
   }
 
-  private pullMoveData(): void {
+  private async pullMoveData(): Promise<void> {
+    /**
+     * check if scrapping is required
+     * if the data is older than 3 days then automatically scrap move list
+     */
+    const timeStampReq: Observable<any> = this.moveListService.getLastUpdatedTimestamp(this.selectedCharacter);
+    const timeStamp: string = await firstValueFrom(timeStampReq);
+
+    const end = new Date();
+    const start = new Date(timeStamp);
+    const threeDaysInSeconds: number = 259200;
+    const elapsedTimeInSeconds: number = (Math.floor(end.getTime()) - Math.floor(start.getTime())) / 1000;
+
+    if (elapsedTimeInSeconds > threeDaysInSeconds) {
+      this.scrapMoveList().then(() => {
+        this.fetchCurrentMoveList();
+      });
+    }
+    else {
+      this.fetchCurrentMoveList();
+    }
+  }
+
+  private fetchCurrentMoveList() {
     this.moveListService.getMoveList(this.selectedCharacter).subscribe((moves: Move[]) => {
       this.moveList = moves.sort(this.sortMoves);
     });
 
-    this.updateMoveListTimestamp();
+    this.updateMoveListTimestamp().then();
   }
 
   private sortMoves(a: Move, b: Move): number {
@@ -86,20 +114,23 @@ export class CharacterSelectComponent implements OnInit {
     }
   }
 
-  public updateMoveListTimestamp() {
-    this.moveListService.getLastUpdatedTimestamp(this.selectedCharacter).subscribe((timestamp: string) => {
-      if (!timestamp) {
-        this.lastUpdated = "";
+  public async updateMoveListTimestamp(): Promise<void> {
+    let request: Observable<any> = this.moveListService.getLastUpdatedTimestamp(this.selectedCharacter);
+    let timestamp: string = await firstValueFrom(request);
 
-        this.moveListService.lastUpdatedTimestamp = undefined;
+    if (!timestamp) {
+      this.lastUpdated = "";
 
-        return;
-      }
+      this.moveListService.lastUpdatedTimestamp = undefined;
 
-      this.moveListService.lastUpdatedTimestamp = new Date(timestamp);
+      return;
+    }
 
-      this.lastUpdated = this.moveListService.lastUpdatedTimestamp.toLocaleString();
-    });
+    this.moveListService.lastUpdatedTimestamp = new Date(timestamp);
+
+    this.lastUpdated = this.moveListService.lastUpdatedTimestamp.toLocaleString();
+
+    TIMESTAMP_UPDATE.emit(this.lastUpdated);
   }
 
   public addComboNote() {
