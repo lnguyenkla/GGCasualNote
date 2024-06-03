@@ -1,0 +1,53 @@
+<div class="main-container">
+  <div class="pinned-info-container">
+    <div style="display: flex">
+      <mat-form-field appearance="fill">
+        <mat-label>Select Character</mat-label>
+        <mat-select (selectionChange)="onSelectCharacter($event)">
+          <mat-option *ngFor="let character of characterDropdownList" [value]="character.characterId">
+            {{character.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div style="margin-left: 20px;">
+
+      </div>
+      <div style="margin-left: 20px;">
+        <button mat-icon-button style="margin-top: 5px;" (click)="addComboNote()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div>
+      <div *ngIf="!moveList || moveList.length === 0">
+        <span>Nothing to show here. Try selecting a character or scrapping the move list first.</span>
+      </div>
+      <button style="margin-right: 2px" mat-raised-button *ngFor="let move of moveList">{{move.input}}</button>
+    </div>
+  </div>
+  <div class="note-container">
+    <mat-card class="combo-note-card"
+              *ngFor="let note of comboNotes; let i = index">
+      <div class="combo-input-container">
+        <input placeholder="Context" matInput [(ngModel)]="comboNotes[i].noteContext">
+        <input placeholder="Combo string" matInput [(ngModel)]="comboNotes[i].comboString">
+      </div>
+      <div style="margin-left: 30px; display: flex">
+        <button mat-icon-button (click)="saveComboNote(i)" >
+          <mat-icon>save</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deleteComboNote(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-button style="margin-top: 5px"
+                (click)="toggleShowVideo(i)">Show video</button>
+        <iframe *ngIf="displayVideoFlags[i]" width="560" height="315" [src]="videoSafeUrls[i]" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <div style="margin-top: 5px; margin-left: 20px">
+          <input matInput placeholder="Video link" [(ngModel)]="comboNotes[i].footageUrl">
+          <span class="longest-streak-label">Longest streak</span>
+          <input class="longest-streak-input" matInput type="number" min="0" [(ngModel)]="comboNotes[i].longestStreak">
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

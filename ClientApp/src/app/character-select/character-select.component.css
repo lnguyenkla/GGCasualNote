@@ -1,0 +1,45 @@
+.combo-input-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.combo-note-card {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.example-form {
+  min-width: 150px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.note-container {
+  height: 100%;
+  overflow: auto;
+}
+
+.main-container {
+  height: calc(100vh - 56px);
+  display: flex;
+  flex-direction: column;
+}
+
+.longest-streak-input {
+  width: 55px;
+  margin-left: 20px;
+}
+
+.longest-streak-label {
+  margin-left: 20px;
+}
+
+.pinned-info-container {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #9aa1a8;
+}

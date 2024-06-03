@@ -14,11 +14,16 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatCardModule} from '@angular/material/card';
+import { CharacterSelectComponent } from './character-select/character-select.component';
+import {AppRoutingModule} from "./app-routing/app-routing.module";
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    CharacterSelectComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
@@ -26,9 +31,7 @@ import {MatCardModule} from '@angular/material/card';
     FormsModule,
     MatInputModule,
     MatSelectModule,
-    RouterModule.forRoot([
-      {path: '', component: HomeComponent, pathMatch: 'full'}
-    ]),
+    AppRoutingModule,
     BrowserAnimationsModule,
     MatButtonModule,
     MatIconModule,

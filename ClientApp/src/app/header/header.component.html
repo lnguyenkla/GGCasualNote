@@ -1,0 +1,14 @@
+<div class="navbar-header">
+  <div>
+    <h1 style="margin-bottom: 3px;">GGST Casual Note</h1>
+  </div>
+  <mat-spinner class="load-spinner"
+               mode="indeterminate"
+               *ngIf="isLoading"
+               color="accent">
+  </mat-spinner>
+  <div class="flex-spacer"></div>
+  <div>
+    <span>Last updated: {{lastUpdated || "N/A"}}</span>
+  </div>
+</div>
