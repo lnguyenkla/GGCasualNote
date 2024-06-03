@@ -1,13 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {Character, ComboNote, Move} from "../../models";
-import {CharacterService} from "../../services/character.service";
 import {MoveListService} from "../../services/move-list.service";
 import {ComboNoteService} from "../../services/combo-note.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {MatSelectChange} from "@angular/material/select";
 import {ActivatedRoute} from "@angular/router";
 import {firstValueFrom, Observable} from "rxjs";
-import {TIMESTAMP_UPDATE} from "../header/header.component";
+import {HEADER_TIMESTAMP_UPDATE} from "../header/header.component";
 
 @Component({
   selector: 'app-character-select',
@@ -15,7 +14,6 @@ import {TIMESTAMP_UPDATE} from "../header/header.component";
   styleUrls: ['./character-select.component.css']
 })
 export class CharacterSelectComponent implements OnInit {
-  public currentInputRef: any = "";
   public selectedCharacter: string = "";
   public characterDropdownList: Character[] = [];
   public moveList: Move[] = [];
@@ -31,26 +29,20 @@ export class CharacterSelectComponent implements OnInit {
               private activatedRoute: ActivatedRoute) {
   }
   ngOnInit() {
-    this.activatedRoute.data.subscribe(
-      (data: any) => {
-        this.characterDropdownList = data.characters;
-      }
+    this.activatedRoute.data.subscribe((data: any) =>
+        this.characterDropdownList = data.characters
     );
   }
 
-  public async scrapMoveList() {
+  public async scrapMoveList(): Promise<void> {
     this.isLoading = true;
 
-    let request: Observable<any> = this.moveListService.putScrapMoveList(this.selectedCharacter);
-    let result: string[] = await firstValueFrom(request);
+    const request: Observable<any> = this.moveListService.putScrapMoveList(this.selectedCharacter);
+    const result: string[] = await firstValueFrom(request).catch(err => console.error(err));
+
+    this.isLoading = false;
 
     console.log(result);
-
-    this.moveListService.putScrapMoveList(this.selectedCharacter).subscribe((inputList: string[]) => {
-      console.log(inputList);
-
-      this.isLoading = false;
-    });
   }
 
   public onSelectCharacter($event: MatSelectChange) {
@@ -62,12 +54,15 @@ export class CharacterSelectComponent implements OnInit {
   }
 
   private pullComboNoteData() {
-    this.comboNoteService.getComboNotes(this.selectedCharacter).subscribe((notes: ComboNote[]) => {
-      this.comboNotes = notes;
+    this.comboNoteService.getComboNotes(this.selectedCharacter).subscribe({
+      next: (notes: ComboNote[]) => {
+        this.comboNotes = notes;
 
-      this.displayVideoFlags = [];
+        this.displayVideoFlags = [];
 
-      this.videoSafeUrls = [];
+        this.videoSafeUrls = [];
+      },
+      error: err => console.error(err)
     });
   }
 
@@ -94,9 +89,11 @@ export class CharacterSelectComponent implements OnInit {
     }
   }
 
-  private fetchCurrentMoveList() {
-    this.moveListService.getMoveList(this.selectedCharacter).subscribe((moves: Move[]) => {
+  private fetchCurrentMoveList(): void {
+    this.moveListService.getMoveList(this.selectedCharacter).subscribe({ next: (moves: Move[]) => {
       this.moveList = moves.sort(this.sortMoves);
+    },
+      error: err => console.error(err)
     });
 
     this.updateMoveListTimestamp().then();
@@ -116,7 +113,7 @@ export class CharacterSelectComponent implements OnInit {
 
   public async updateMoveListTimestamp(): Promise<void> {
     let request: Observable<any> = this.moveListService.getLastUpdatedTimestamp(this.selectedCharacter);
-    let timestamp: string = await firstValueFrom(request);
+    let timestamp: string = await firstValueFrom(request).catch(err => console.error(err));
 
     if (!timestamp) {
       this.lastUpdated = "";
@@ -130,7 +127,7 @@ export class CharacterSelectComponent implements OnInit {
 
     this.lastUpdated = this.moveListService.lastUpdatedTimestamp.toLocaleString();
 
-    TIMESTAMP_UPDATE.emit(this.lastUpdated);
+    HEADER_TIMESTAMP_UPDATE.emit(this.lastUpdated);
   }
 
   public addComboNote() {
@@ -148,20 +145,25 @@ export class CharacterSelectComponent implements OnInit {
 
     // if ID is not present then we know the note is just added on the UI side
     if (!this.comboNotes[index].comboNoteId) {
-      this.comboNoteService.saveComboNote(this.comboNotes[index]).subscribe((data: string) => {
-        console.log(data);
+      this.comboNoteService.saveComboNote(this.comboNotes[index]).subscribe({ next: (data: string) => {
+          this.isLoading = false;
 
-        this.isLoading = false;
+          // refresh the combo notes so new IDs will be populated
+          this.pullComboNoteData();
+        },
+        error: (err) => {
+          console.error(err);
 
-        // refresh the combo notes so new IDs will be populated
-        this.pullComboNoteData();
+          this.comboNotes = [];
+        }
       });
     }
     else {
-      this.comboNoteService.updateComboNote(this.comboNotes[index]).subscribe((data: string) => {
-        console.log(data);
-
-        this.isLoading = false;
+      this.comboNoteService.updateComboNote(this.comboNotes[index]).subscribe({
+        next: (data: string) => {
+          this.isLoading = false;
+        },
+        error: err => console.error(err)
       });
     }
   }
@@ -174,12 +176,14 @@ export class CharacterSelectComponent implements OnInit {
     else {
       this.isLoading = true;
 
-      this.comboNoteService.deleteComboNote(this.comboNotes[index].comboNoteId!).subscribe((data: string) => {
+      this.comboNoteService.deleteComboNote(this.comboNotes[index].comboNoteId!).subscribe({ next: (data: string) => {
         console.log(data);
 
         this.isLoading = false;
 
         this.pullComboNoteData();
+      },
+        error: err => console.error(err)
       });
     }
   }
@@ -190,5 +194,4 @@ export class CharacterSelectComponent implements OnInit {
 
     this.displayVideoFlags[index] = !this.displayVideoFlags[index];
   }
-
 }
