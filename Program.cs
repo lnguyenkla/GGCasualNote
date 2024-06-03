@@ -1,4 +1,6 @@
 using GGCasualNote.Models;
+using GGCasualNote.Repositories;
+using GGCasualNote.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<GgNoteContext>();
+builder.Services.AddTransient<CharacterRepository, CharacterRepository>();
+builder.Services.AddTransient<ComboNoteRepository, ComboNoteRepository>();
+builder.Services.AddTransient<MoveRepository, MoveRepository>();
+builder.Services.AddTransient<MoveListTimestampRepository, MoveListTimestampRepository>();
+builder.Services.AddTransient<ScrapService, ScrapService>();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -18,6 +25,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
     app.UseSwagger();
     app.UseSwaggerUI();
+    // app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+    // {
+    //     options.SwaggerEndpoint("./swagger/v1/swagger.json", "v1");
+    //     options.RoutePrefix = string.Empty;
+    // });
 }
 
 app.UseHttpsRedirection();
