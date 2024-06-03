@@ -20,8 +20,8 @@ public class CharacterRepository : BaseRepository
     public async Task<IEnumerable<Character>> GetAllCharacter()
     {
         return await dbContext.Characters
-            .Include(c => c.CharacterId)
-            .Include(c => c.Name)
+            // .Include(c => c.CharacterId)
+            // .Include(c => c.Name)
             .ToListAsync();
     }
 }

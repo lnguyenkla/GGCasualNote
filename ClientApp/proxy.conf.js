@@ -7,7 +7,7 @@ const PROXY_CONFIG = [
   {
     context: [
       "/ggnote/**",
-      "api/**"
+      "/api/**"
    ],
     proxyTimeout: 10000,
     target: target,

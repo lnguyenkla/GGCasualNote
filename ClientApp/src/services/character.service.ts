@@ -11,6 +11,6 @@ export class CharacterService {
   constructor(private http: HttpClient) {}
 
   public getCharacters(): Observable<any> {
-    return this.http.get('https://localhost:44480/ggnote/get-all-characters');
+    return this.http.get('https://localhost:44480/api/character');
   }
 }

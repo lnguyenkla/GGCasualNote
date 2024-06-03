@@ -14,20 +14,20 @@ export class ComboNoteService {
     let params = new HttpParams();
     params = params.append('characterId', characterId);
 
-    return this.http.get('https://localhost:44480/ggnote/get-combo-notes', {
+    return this.http.get('https://localhost:44480/api/combonote', {
       params: params
     });
   }
 
-  public saveComboNote(note: ComboNote): Observable<string> {
-    return this.http.post('https://localhost:44480/ggnote/create-combo-note', note, {
-      responseType: 'text'
+  public saveComboNote(note: ComboNote): Observable<any> {
+    return this.http.post('https://localhost:44480/api/combonote', note, {
+      responseType: 'json'
     });
   }
 
-  public updateComboNote(note: ComboNote): Observable<string> {
-    return this.http.put('https://localhost:44480/ggnote/update-combo-note', note, {
-      responseType: 'text'
+  public updateComboNote(note: ComboNote): Observable<any> {
+    return this.http.put('https://localhost:44480/api/combonote', note, {
+      responseType: 'json'
     });
   }
 
@@ -35,7 +35,7 @@ export class ComboNoteService {
     let params: HttpParams = new HttpParams();
     params = params.append('comboNoteId', id);
 
-    return this.http.delete('https://localhost:44480/ggnote/delete-combo-note', {
+    return this.http.delete('https://localhost:44480/api/combonote', {
       params: params,
       responseType: 'text'
     });

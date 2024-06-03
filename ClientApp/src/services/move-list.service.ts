@@ -14,7 +14,7 @@ export class MoveListService {
     let params = new HttpParams();
     params = params.append('characterId', characterId);
 
-    return this.http.get('https://localhost:44480/ggnote/get-move-list', {
+    return this.http.get('https://localhost:44480/api/move', {
       params: params
     });
   }
@@ -23,7 +23,7 @@ export class MoveListService {
     let params = new HttpParams();
     params = params.append('characterId', characterId);
 
-    return this.http.get('https://localhost:44480/ggnote/move-list-last-updated', {
+    return this.http.get('https://localhost:44480/api/movelisttimestamp', {
       params: params
     });
   }
@@ -32,7 +32,7 @@ export class MoveListService {
     let params = new HttpParams();
     params = params.append('characterId', characterId);
 
-    return this.http.put('https://localhost:44480/ggnote/update-move-list', null, {
+    return this.http.put('https://localhost:44480/api/move', null, {
       params: params
     });
   }
