@@ -74,4 +74,40 @@ public class ScrapService
 
         return moveList;
     }
+
+    public async Task<IEnumerable<Move>> GetLastestMoveList(string characterId)
+    {
+        bool isMoveListStale = await IsMoveListStale(characterId);
+
+        if (isMoveListStale)
+        {
+            await ScrapMoveList(characterId);
+
+            return await _moveRepo.GetAllMoves(characterId);
+        }
+
+        return await _moveRepo.GetAllMoves(characterId);
+    }
+
+    private async Task<bool> IsMoveListStale(string characterId)
+    {
+        DateTime? lastUpdated = await _timestampRepo.GetMostRecentTimestamp(characterId);
+
+        if (!lastUpdated.HasValue)
+        {
+            return true;
+        }
+        
+        DateTimeOffset startTime = new DateTimeOffset(lastUpdated.Value);
+        DateTimeOffset endTime = DateTime.Now.ToLocalTime();
+
+        // add three days in seconds for stale period
+        const long staleThresholdInSeconds = 259200;
+
+        bool result = (endTime.ToUnixTimeSeconds() - startTime.ToUnixTimeSeconds() > staleThresholdInSeconds)
+            ? true
+            : false;
+
+        return result;
+    }
 }

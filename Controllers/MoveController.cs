@@ -22,7 +22,7 @@ public class MoveController
     [HttpGet]
     public async Task<IEnumerable<Move>> Get(string characterId)
     {
-        return await _moveRepo.GetAllMoves(characterId);
+        return await _scrapService.GetLastestMoveList(characterId);
     }
 
     [HttpPut]
