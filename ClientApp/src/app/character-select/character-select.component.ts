@@ -25,24 +25,12 @@ export class CharacterSelectComponent implements OnInit {
 
   constructor(private moveListService: MoveListService,
               private comboNoteService: ComboNoteService,
-              private sanitizer: DomSanitizer,
               private activatedRoute: ActivatedRoute) {
   }
   ngOnInit() {
     this.activatedRoute.data.subscribe((data: any) =>
         this.characterDropdownList = data.characters
     );
-  }
-
-  public async scrapMoveList(): Promise<void> {
-    this.isLoading = true;
-
-    const request: Observable<any> = this.moveListService.putScrapMoveList(this.selectedCharacter);
-    const result: string[] = await firstValueFrom(request).catch(err => console.error(err));
-
-    this.isLoading = false;
-
-    console.log(result);
   }
 
   public onSelectCharacter($event: MatSelectChange) {
@@ -94,7 +82,7 @@ export class CharacterSelectComponent implements OnInit {
     this.moveListService.getMoveList(this.selectedCharacter).subscribe({ next: (moves: Move[]) => {
       this.moveList = moves.sort(this.sortMoves);
 
-      this.updateMoveListTimestamp().then();
+      this.updateMoveListTimestamp();
     },
       error: err => console.error(err)
     });
@@ -112,23 +100,22 @@ export class CharacterSelectComponent implements OnInit {
     }
   }
 
-  public async updateMoveListTimestamp(): Promise<void> {
-    let request: Observable<any> = this.moveListService.getLastUpdatedTimestamp(this.selectedCharacter);
-    let timestamp: string = await firstValueFrom(request).catch(err => console.error(err));
+  public updateMoveListTimestamp(): void {
+    this.moveListService.getLastUpdatedTimestamp(this.selectedCharacter).subscribe((timestamp: string) => {
+      if (!timestamp) {
+        this.lastUpdated = "";
 
-    if (!timestamp) {
-      this.lastUpdated = "";
+        this.moveListService.lastUpdatedTimestamp = undefined;
 
-      this.moveListService.lastUpdatedTimestamp = undefined;
+        return;
+      }
 
-      return;
-    }
+      this.moveListService.lastUpdatedTimestamp = new Date(timestamp);
 
-    this.moveListService.lastUpdatedTimestamp = new Date(timestamp);
+      this.lastUpdated = this.moveListService.lastUpdatedTimestamp.toLocaleString();
 
-    this.lastUpdated = this.moveListService.lastUpdatedTimestamp.toLocaleString();
-
-    HEADER_TIMESTAMP_UPDATE.emit(this.lastUpdated);
+      HEADER_TIMESTAMP_UPDATE.emit(this.lastUpdated);
+    });
   }
 
   public addComboNote() {
@@ -145,28 +132,18 @@ export class CharacterSelectComponent implements OnInit {
     this.isLoading = true;
 
     // if ID is not present then we know the note is just added on the UI side
-    if (!this.comboNotes[index].comboNoteId) {
-      this.comboNoteService.saveComboNote(this.comboNotes[index]).subscribe({ next: (data: string) => {
-          this.isLoading = false;
+    const request: Observable<any> = !this.comboNotes[index].comboNoteId
+      ? this.comboNoteService.saveComboNote(this.comboNotes[index])
+      : this.comboNoteService.updateComboNote(this.comboNotes[index]);
 
+    request.subscribe({ next: (data) => {
+        if (!this.comboNotes[index].comboNoteId) {
           // refresh the combo notes so new IDs will be populated
           this.pullComboNoteData();
-        },
-        error: (err) => {
-          console.error(err);
-
-          this.comboNotes = [];
         }
-      });
-    }
-    else {
-      this.comboNoteService.updateComboNote(this.comboNotes[index]).subscribe({
-        next: (data: string) => {
-          this.isLoading = false;
-        },
-        error: err => console.error(err)
-      });
-    }
+      },
+      error: err => console.error(err)
+    });
   }
 
   public deleteComboNote(index: number): void {
@@ -187,12 +164,5 @@ export class CharacterSelectComponent implements OnInit {
         error: err => console.error(err)
       });
     }
-  }
-
-  public toggleShowVideo(index: number) {
-    // refactor this later
-    this.videoSafeUrls[index] = this.sanitizer.bypassSecurityTrustResourceUrl(this.comboNotes[index].footageUrl);
-
-    this.displayVideoFlags[index] = !this.displayVideoFlags[index];
   }
 }

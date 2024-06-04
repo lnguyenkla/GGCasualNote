@@ -1,0 +1,20 @@
+.combo-input-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.combo-note-card {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.longest-streak-input {
+  width: 55px;
+  margin-left: 20px;
+}
+
+.longest-streak-label {
+  margin-left: 20px;
+}

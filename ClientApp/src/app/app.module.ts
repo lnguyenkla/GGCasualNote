@@ -17,13 +17,15 @@ import {MatCardModule} from '@angular/material/card';
 import { CharacterSelectComponent } from './character-select/character-select.component';
 import {AppRoutingModule} from "./app-routing/app-routing.module";
 import { HeaderComponent } from './header/header.component';
+import { ComboNoteComponent } from './combo-note/combo-note.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     CharacterSelectComponent,
-    HeaderComponent
+    HeaderComponent,
+    ComboNoteComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
