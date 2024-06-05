@@ -13,14 +13,17 @@
         <h2>{{selectedCharacterName}}</h2>
       </div>
     </div>
-    <div>
+    <div class="move-input-container">
       <div *ngIf="!moveList || moveList.length === 0">
         <span>Loading move inputs...</span>
       </div>
-      <button style="margin: 5px;" mat-raised-button *ngFor="let move of moveList">{{move.input}}</button>
+      <div class="move-input" [ngClass]="moveListColorClasses[i]" *ngFor="let move of moveList; let i = index">
+        <span class="move-input-text">{{move.input}}</span>
+      </div>
+<!--      <button style="margin: 5px;" mat-raised-button *ngFor="let move of moveList">{{move.input}}</button>-->
     </div>
   </div>
-  <div class="note-container">
+  <div class="note-container" id="combo-note-container">
     <app-combo-note *ngFor="let note of comboNotes; let i = index"
       [comboNote]="comboNotes[i]"
       (saveComboNote)="saveComboNote(i)"

@@ -20,5 +20,67 @@
 
 .pinned-info-container {
   padding-bottom: 20px;
+  margin-bottom: 10px;
   border-bottom: 1px solid #9aa1a8;
+}
+
+.move-input {
+  margin: 5px;
+  padding: 5px;
+  border: solid 2px;
+  border-radius: 8px;
+}
+
+.p-move {
+  border-color: purple;
+  background-color: #e8d1ee;
+}
+
+.k-move {
+  border-color: darkblue;
+  background-color: #dfdfff;
+}
+
+.s-move {
+  border-color: #049804;
+  background-color: #a9f5ad;
+}
+
+.h-move {
+  border-color: red;
+  background-color: #fad5d5;
+}
+
+.d-move {
+  border-color: orange;
+  background-color: #fffabc;
+}
+
+.move-input-text {
+
+}
+
+.move-input-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#combo-note-container::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
+  background-color: #F5F5F5;
+}
+
+#combo-note-container::-webkit-scrollbar
+{
+  width: 8px;
+  background-color: #F5F5F5;
+}
+
+#combo-note-container::-webkit-scrollbar-thumb
+{
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: #555;
 }

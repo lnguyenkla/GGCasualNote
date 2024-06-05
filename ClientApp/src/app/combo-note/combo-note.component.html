@@ -1,6 +1,6 @@
 <mat-card class="combo-note-card">
   <div class="combo-input-container">
-    <input placeholder="Context" matInput [(ngModel)]="comboNote.noteContext">
+    <input placeholder="Context" style="margin-bottom: 20px;" matInput [(ngModel)]="comboNote.noteContext">
     <input placeholder="Combo string" matInput [(ngModel)]="comboNote.comboString">
   </div>
   <div style="margin-left: 30px; display: flex">
@@ -12,7 +12,7 @@
     </button>
     <button mat-button style="margin-top: 5px"
             (click)="toggleShowVideo()">Show video</button>
-    <iframe *ngIf="displayVideoFlag" width="560" height="315" [src]="videoSafeUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <iframe style="margin-bottom: 10px" *ngIf="displayVideoFlag" width="560" height="315" [src]="videoSafeUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     <div style="margin-top: 5px; margin-left: 20px">
       <input matInput placeholder="Video link" [(ngModel)]="comboNote.footageUrl">
       <span class="longest-streak-label">Longest streak</span>

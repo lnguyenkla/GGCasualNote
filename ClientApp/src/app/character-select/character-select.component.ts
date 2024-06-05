@@ -17,8 +17,9 @@ import {CharacterService} from "../../services/character.service";
 export class CharacterSelectComponent implements OnInit {
   public selectedCharacterId: string = "";
   public selectedCharacterName?: string = "";
-  public characterDropdownList: Character[] = [];
+  // public characterDropdownList: Character[] = [];
   public moveList: Move[] = [];
+  public moveListColorClasses: string[] = [];
   public lastUpdated: string = "";
   public isLoading: boolean = false;
   public comboNotes: ComboNote[] = [];
@@ -31,9 +32,9 @@ export class CharacterSelectComponent implements OnInit {
               private activatedRoute: ActivatedRoute) {
   }
   ngOnInit() {
-    this.activatedRoute.data.subscribe((data: any) =>
-        this.characterDropdownList = data.characters
-    );
+    // this.activatedRoute.data.subscribe((data: any) =>
+    //     this.characterDropdownList = data.characters
+    // );
 
     this.activatedRoute.queryParams.subscribe((params: any) => {
       this.selectedCharacterId = params.characterId;
@@ -87,10 +88,46 @@ export class CharacterSelectComponent implements OnInit {
     this.moveListService.getMoveList(this.selectedCharacterId).subscribe({ next: (moves: Move[]) => {
       this.moveList = moves.sort(this.sortMoves);
 
+      this.createMoveColorCode();
+
       this.updateMoveListTimestamp();
     },
       error: err => console.error(err)
     });
+  }
+
+  private createMoveColorCode() {
+    for (let i = 0; i < this.moveList.length; i++) {
+      /**
+       * checking the type of attack button
+       * the string format of the wiki usually makes the attack button as the last character of the first word
+       */
+      const attackButton: string = (this.moveList[i].input.split(' ')[0].match(/[PKSHD]/) || []).pop()!;
+
+      switch (attackButton) {
+        case 'P': {
+          this.moveListColorClasses[i] = "p-move";
+          break;
+        }
+        case 'K': {
+          this.moveListColorClasses[i] = "k-move";
+          break;
+        }
+        case 'S': {
+          this.moveListColorClasses[i] = "s-move";
+          break;
+        }
+        case 'H': {
+          this.moveListColorClasses[i] = "h-move";
+          break;
+        }
+        case 'D': {
+          this.moveListColorClasses[i] = "d-move";
+          break;
+        }
+        default: break;
+      }
+    }
   }
 
   private sortMoves(a: Move, b: Move): number {
