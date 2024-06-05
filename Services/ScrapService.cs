@@ -104,10 +104,11 @@ public class ScrapService
         // add three days in seconds for stale period
         const long staleThresholdInSeconds = 259200;
 
-        bool result = (endTime.ToUnixTimeSeconds() - startTime.ToUnixTimeSeconds() > staleThresholdInSeconds)
-            ? true
-            : false;
+        if (endTime.ToUnixTimeSeconds() - startTime.ToUnixTimeSeconds() > staleThresholdInSeconds)
+        {
+            return true;
+        }
 
-        return result;
+        return false;
     }
 }

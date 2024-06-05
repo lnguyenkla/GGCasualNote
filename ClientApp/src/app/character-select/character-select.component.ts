@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ComboNote, Move} from "../../models";
 import {MoveListService} from "../../services/move-list.service";
 import {ComboNoteService} from "../../services/combo-note.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, UrlSegment} from "@angular/router";
 import {firstValueFrom, Observable} from "rxjs";
 import {HEADER_TIMESTAMP_UPDATE} from "../header/header.component";
 import {CharacterService} from "../../services/character.service";
@@ -31,10 +31,6 @@ export class CharacterSelectComponent implements OnInit {
               private activatedRoute: ActivatedRoute) {
   }
   ngOnInit() {
-    // this.activatedRoute.data.subscribe((data: any) =>
-    //     this.characterDropdownList = data.characters
-    // );
-
     this.activatedRoute.queryParams.subscribe((params: any) => {
       this.selectedCharacterId = params.characterId;
 
@@ -155,7 +151,7 @@ export class CharacterSelectComponent implements OnInit {
 
       this.lastUpdated = this.moveListService.lastUpdatedTimestamp.toLocaleString();
 
-      HEADER_TIMESTAMP_UPDATE.emit(this.lastUpdated);
+      HEADER_TIMESTAMP_UPDATE.emit(`Last updated: ${this.lastUpdated}`);
     });
   }
 

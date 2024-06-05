@@ -10,12 +10,16 @@
     <button mat-icon-button (click)="onDeleteComboNoteClick()">
       <mat-icon>delete</mat-icon>
     </button>
-    <button mat-button style="margin-top: 5px"
-            (click)="toggleShowVideo()">Show video</button>
+    <button mat-button style="margin-top: 8px"
+            (click)="toggleShowVideo()">Show video
+      <mat-icon>play_circle</mat-icon>
+    </button>
     <iframe style="margin-bottom: 10px" *ngIf="displayVideoFlag" width="560" height="315" [src]="videoSafeUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    <div style="margin-top: 5px; margin-left: 20px; display: flex; flex-wrap: wrap;">
-      <div>
-        <input matInput placeholder="Video link" [(ngModel)]="comboNote.footageUrl">
+    <div class="extra-info-container">
+      <div style="display: flex">
+        <div>
+          <input style="width: 350px;" matInput placeholder="Youtube share link" [(ngModel)]="comboNote.footageUrl">
+        </div>
       </div>
       <div style="display: flex">
         <span class="longest-streak-label">Longest streak</span>
