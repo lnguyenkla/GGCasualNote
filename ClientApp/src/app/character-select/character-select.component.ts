@@ -56,29 +56,6 @@ export class CharacterSelectComponent implements OnInit {
     });
   }
 
-  // private async pullMoveData(): Promise<void> {
-  //   /**
-  //    * check if scrapping is required
-  //    * if the data is older than 3 days then automatically scrap move list
-  //    */
-  //   const timeStampReq: Observable<any> = this.moveListService.getLastUpdatedTimestamp(this.selectedCharacter);
-  //   const timeStamp: string = await firstValueFrom(timeStampReq).catch(err => console.error(err));
-  //
-  //   const end = new Date();
-  //   const start = new Date(timeStamp);
-  //   const threeDaysInSeconds: number = 259200;
-  //   const elapsedTimeInSeconds: number = (Math.floor(end.getTime()) - Math.floor(start.getTime())) / 1000;
-  //
-  //   if (elapsedTimeInSeconds > threeDaysInSeconds) {
-  //     await this.scrapMoveList().catch(err => console.error(err));
-  //
-  //     this.fetchCurrentMoveList();
-  //   }
-  //   else {
-  //     this.fetchCurrentMoveList();
-  //   }
-  // }
-
   private fetchCurrentMoveList(): void {
     this.moveListService.getMoveList(this.selectedCharacterId).subscribe({ next: (moves: Move[]) => {
       this.moveList = moves.sort(this.sortMoves);

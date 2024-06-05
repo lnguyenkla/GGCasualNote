@@ -1,6 +1,4 @@
 import {Component, EventEmitter, OnInit} from '@angular/core';
-import {MoveListService} from "../../services/move-list.service";
-import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
 
 export const HEADER_TIMESTAMP_UPDATE: EventEmitter<string> = new EventEmitter<string>();
 
