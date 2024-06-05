@@ -13,10 +13,16 @@
     <button mat-button style="margin-top: 5px"
             (click)="toggleShowVideo()">Show video</button>
     <iframe style="margin-bottom: 10px" *ngIf="displayVideoFlag" width="560" height="315" [src]="videoSafeUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    <div style="margin-top: 5px; margin-left: 20px">
-      <input matInput placeholder="Video link" [(ngModel)]="comboNote.footageUrl">
-      <span class="longest-streak-label">Longest streak</span>
-      <input class="longest-streak-input" matInput type="number" min="0" [(ngModel)]="comboNote.longestStreak">
+    <div style="margin-top: 5px; margin-left: 20px; display: flex; flex-wrap: wrap;">
+      <div>
+        <input matInput placeholder="Video link" [(ngModel)]="comboNote.footageUrl">
+      </div>
+      <div style="display: flex">
+        <span class="longest-streak-label">Longest streak</span>
+        <div>
+          <input class="longest-streak-input" matInput type="number" min="0" [(ngModel)]="comboNote.longestStreak">
+        </div>
+      </div>
     </div>
   </div>
 </mat-card>

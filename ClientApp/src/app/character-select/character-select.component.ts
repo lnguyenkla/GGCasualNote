@@ -8,6 +8,7 @@ import {ActivatedRoute} from "@angular/router";
 import {firstValueFrom, Observable} from "rxjs";
 import {HEADER_TIMESTAMP_UPDATE} from "../header/header.component";
 import {CharacterService} from "../../services/character.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-character-select',
@@ -29,6 +30,7 @@ export class CharacterSelectComponent implements OnInit {
   constructor(private moveListService: MoveListService,
               private comboNoteService: ComboNoteService,
               private characterService: CharacterService,
+              private snackBar: MatSnackBar,
               private activatedRoute: ActivatedRoute) {
   }
   ngOnInit() {
@@ -183,6 +185,8 @@ export class CharacterSelectComponent implements OnInit {
           // refresh the combo notes so new IDs will be populated
           this.pullComboNoteData();
         }
+
+        this.noti('Combo note saved!', 'Save');
       },
       error: err => console.error(err)
     });
@@ -192,19 +196,29 @@ export class CharacterSelectComponent implements OnInit {
     // if ID is not present then we know the note is just added on the UI side
     if (!this.comboNotes[index].comboNoteId) {
       this.comboNotes.splice(index, 1);
+
+      this.noti('Combo note deleted!', 'Delete');
     }
     else {
       this.isLoading = true;
 
       this.comboNoteService.deleteComboNote(this.comboNotes[index].comboNoteId!).subscribe({ next: (data: string) => {
-        console.log(data);
-
         this.isLoading = false;
+
+        this.noti('Combo note deleted!', 'Delete');
 
         this.pullComboNoteData();
       },
         error: err => console.error(err)
       });
     }
+  }
+
+  private noti(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 3000,
+      horizontalPosition: "center",
+      verticalPosition: "top"
+    });
   }
 }

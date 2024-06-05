@@ -18,6 +18,7 @@ import { CharacterSelectComponent } from './character-select/character-select.co
 import {AppRoutingModule} from "./app-routing/app-routing.module";
 import { HeaderComponent } from './header/header.component';
 import { ComboNoteComponent } from './combo-note/combo-note.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { ComboNoteComponent } from './combo-note/combo-note.component';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatCardModule
+    MatCardModule,
+    MatSnackBarModule
   ],
   providers: [MoveListService],
   bootstrap: [AppComponent]
