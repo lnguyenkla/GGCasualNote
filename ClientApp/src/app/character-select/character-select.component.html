@@ -1,28 +1,23 @@
 <div class="main-container">
   <div class="pinned-info-container">
     <div style="display: flex">
-      <mat-form-field appearance="fill">
-        <mat-label>Select Character</mat-label>
-        <mat-select (selectionChange)="onSelectCharacter($event)">
-          <mat-option *ngFor="let character of characterDropdownList" [value]="character.characterId">
-            {{character.name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <div style="margin-left: 20px;">
-
+      <div style="margin-left: 20px; margin-top: 13px;">
+        <button mat-button routerLink="../">Back</button>
       </div>
       <div style="margin-left: 20px;">
-        <button mat-icon-button style="margin-top: 5px;" (click)="addComboNote()">
+        <button mat-icon-button style="margin-top: 5px; margin-bottom: 5px;" (click)="addComboNote()">
           <mat-icon>add</mat-icon>
         </button>
+      </div>
+      <div style="margin-left: 20px; margin-top: 15px">
+        <h2>{{selectedCharacterName}}</h2>
       </div>
     </div>
     <div>
       <div *ngIf="!moveList || moveList.length === 0">
-        <span>Nothing to show here. Try selecting a character or scrapping the move list first.</span>
+        <span>Loading move inputs...</span>
       </div>
-      <button style="margin-right: 2px" mat-raised-button *ngFor="let move of moveList">{{move.input}}</button>
+      <button style="margin: 5px;" mat-raised-button *ngFor="let move of moveList">{{move.input}}</button>
     </div>
   </div>
   <div class="note-container">

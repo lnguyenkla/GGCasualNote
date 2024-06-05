@@ -1,0 +1,9 @@
+.character-container {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.select-character {
+  margin: 5px 20px;
+}

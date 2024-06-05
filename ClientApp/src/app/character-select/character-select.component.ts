@@ -7,6 +7,7 @@ import {MatSelectChange} from "@angular/material/select";
 import {ActivatedRoute} from "@angular/router";
 import {firstValueFrom, Observable} from "rxjs";
 import {HEADER_TIMESTAMP_UPDATE} from "../header/header.component";
+import {CharacterService} from "../../services/character.service";
 
 @Component({
   selector: 'app-character-select',
@@ -14,7 +15,8 @@ import {HEADER_TIMESTAMP_UPDATE} from "../header/header.component";
   styleUrls: ['./character-select.component.css']
 })
 export class CharacterSelectComponent implements OnInit {
-  public selectedCharacter: string = "";
+  public selectedCharacterId: string = "";
+  public selectedCharacterName?: string = "";
   public characterDropdownList: Character[] = [];
   public moveList: Move[] = [];
   public lastUpdated: string = "";
@@ -25,25 +27,28 @@ export class CharacterSelectComponent implements OnInit {
 
   constructor(private moveListService: MoveListService,
               private comboNoteService: ComboNoteService,
+              private characterService: CharacterService,
               private activatedRoute: ActivatedRoute) {
   }
   ngOnInit() {
     this.activatedRoute.data.subscribe((data: any) =>
         this.characterDropdownList = data.characters
     );
-  }
 
-  public onSelectCharacter($event: MatSelectChange) {
-    this.selectedCharacter = $event.value;
+    this.activatedRoute.queryParams.subscribe((params: any) => {
+      this.selectedCharacterId = params.characterId;
 
-    // this.pullMoveData().then();
-    this.fetchCurrentMoveList();
+      this.selectedCharacterName = this.characterService.availableCharacters
+        .find(c => c.characterId === this.selectedCharacterId)?.name;
 
-    this.pullComboNoteData();
+      this.fetchCurrentMoveList();
+
+      this.pullComboNoteData();
+    });
   }
 
   private pullComboNoteData() {
-    this.comboNoteService.getComboNotes(this.selectedCharacter).subscribe({
+    this.comboNoteService.getComboNotes(this.selectedCharacterId).subscribe({
       next: (notes: ComboNote[]) => {
         this.comboNotes = notes;
 
@@ -79,7 +84,7 @@ export class CharacterSelectComponent implements OnInit {
   // }
 
   private fetchCurrentMoveList(): void {
-    this.moveListService.getMoveList(this.selectedCharacter).subscribe({ next: (moves: Move[]) => {
+    this.moveListService.getMoveList(this.selectedCharacterId).subscribe({ next: (moves: Move[]) => {
       this.moveList = moves.sort(this.sortMoves);
 
       this.updateMoveListTimestamp();
@@ -101,7 +106,7 @@ export class CharacterSelectComponent implements OnInit {
   }
 
   public updateMoveListTimestamp(): void {
-    this.moveListService.getLastUpdatedTimestamp(this.selectedCharacter).subscribe((timestamp: string) => {
+    this.moveListService.getLastUpdatedTimestamp(this.selectedCharacterId).subscribe((timestamp: string) => {
       if (!timestamp) {
         this.lastUpdated = "";
 
@@ -120,7 +125,7 @@ export class CharacterSelectComponent implements OnInit {
 
   public addComboNote() {
     this.comboNotes.push({
-      characterId: this.selectedCharacter,
+      characterId: this.selectedCharacterId,
       comboString: "",
       noteContext: "",
       footageUrl: "",

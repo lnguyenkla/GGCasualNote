@@ -1,9 +1,14 @@
 <div>
-  <h1>Welcome to GGST Casual Note</h1>
-  <h2>This will pull all special inputs of a character for you to see and help you create notes</h2>
-  <div>
-    <button mat-button routerLink="/character-select">
-      Continue
-    </button>
+  <div style="margin-left: 10px; margin-top: 10px;">
+    <h1>Welcome to GGST Casual Note</h1>
+    <h2>This will pull all special inputs of a character for you to see and help you create notes</h2>
+    <h2>Please select the character you want to play below</h2>
+  </div>
+  <div class="character-container">
+    <div class="select-character" *ngFor="let character of availableCharacters">
+      <button mat-button (click)="goToCharacterDetail(character.characterId)">
+        {{ character.name }}
+      </button>
+    </div>
   </div>
 </div>
