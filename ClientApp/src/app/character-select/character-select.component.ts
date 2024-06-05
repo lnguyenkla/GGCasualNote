@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {Character, ComboNote, Move} from "../../models";
+import {ComboNote, Move} from "../../models";
 import {MoveListService} from "../../services/move-list.service";
 import {ComboNoteService} from "../../services/combo-note.service";
-import {DomSanitizer} from "@angular/platform-browser";
-import {MatSelectChange} from "@angular/material/select";
 import {ActivatedRoute} from "@angular/router";
 import {firstValueFrom, Observable} from "rxjs";
 import {HEADER_TIMESTAMP_UPDATE} from "../header/header.component";
@@ -18,7 +16,6 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 export class CharacterSelectComponent implements OnInit {
   public selectedCharacterId: string = "";
   public selectedCharacterName?: string = "";
-  // public characterDropdownList: Character[] = [];
   public moveList: Move[] = [];
   public moveListColorClasses: string[] = [];
   public lastUpdated: string = "";
